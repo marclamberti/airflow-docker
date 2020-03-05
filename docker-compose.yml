@@ -1,0 +1,20 @@
+version: '3.5'
+services:
+######################################################
+# AIRFLOW
+######################################################
+
+  airflow:
+    build: ./docker/airflow
+    restart: always
+    container_name: airflow
+    volumes:
+      - ./mnt/airflow/dags:/usr/local/airflow/dags
+      - ./mnt/airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "airflow", "8080" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
