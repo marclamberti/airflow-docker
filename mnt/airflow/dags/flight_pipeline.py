@@ -17,7 +17,7 @@ def json_to_csv(**context):
     with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.json') as inf:
         data = json.load(inf)['data']
         with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.csv', 'w') as ouf:
-            f = csv.writer(ouf)
+            f = csv.writer(ouf, quoting=csv.QUOTE_NONE)
             f.writerow([
                 "flight_date",
                 "flight_status",
@@ -32,19 +32,22 @@ def json_to_csv(**context):
                 "live.latitude",
                 "live.longitude"
             ])
-            f.writerow([
-                data['flight_date'],
-                data['flight_status'],
-                data['departure']['airport'],
-                data['departure']['icao'],
-                data['arrival']['airport'],
-                data['arrival']['icao'],
-                data['airline']['name'],
-                data['flight']['number'],
-                data['aircraft']['icao'],
-                data['live']['updated'],
-                data['live']['latitude'],
-                data['live']['longitude']
+            for row in data:
+                if not row['aircraft'] or not row['live']:
+                    continue
+                f.writerow([
+                    row['flight_date'],
+                    row['flight_status'],
+                    row['departure']['airport'],
+                    row['departure']['icao'],
+                    row['arrival']['airport'],
+                    row['arrival']['icao'],
+                    row['airline']['name'],
+                    row['flight']['number'],
+                    row['aircraft']['icao'],
+                    row['live']['updated'],
+                    row['live']['latitude'],
+                    row['live']['longitude']
             ])
 
 def getting_api_data(**context):
