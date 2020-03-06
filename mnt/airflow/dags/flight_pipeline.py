@@ -4,6 +4,7 @@ from airflow.models import Variable
 
 from datetime import datetime, timedelta
 import requests
+import airflow
 import json
 import airflow
 
