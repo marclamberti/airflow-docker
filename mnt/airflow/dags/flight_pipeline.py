@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.hooks.S3_hook import S3Hook
 from airflow.models import Variable
 
 from datetime import datetime, timedelta
@@ -12,6 +13,15 @@ default_args = {
     'start_date': airflow.utils.dates.days_ago(1),
     'owner': 'airflow'
 }
+
+def store_csv_to_s3(**context):
+    S3Hook(
+        aws_conn_id='flight-s3'
+    ).load_file(
+        filename='/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.csv',
+        key='flights',
+        bucket_name='ml-flight-data'
+    )
 
 def json_to_csv(**context):
     with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.json') as inf:
@@ -72,4 +82,9 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         provide_context=True
         )
     
-    # Task 3: Store data to Redshift tables
+    # Task 3: Store csv to AWS S3
+    task_3 = PythonOperator(
+        task_id='store_csv_to_s3',
+        python_callable=store_csv_to_s3,
+        provide_context=True
+    )
