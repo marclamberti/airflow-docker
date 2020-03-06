@@ -8,14 +8,16 @@ services:
     build: ./docker/airflow
     restart: always
     container_name: airflow
+    environment:
+        - FERNET_KEY=XvV60IME7gelr6NmPNjwKpX6oPt0YAi35-9Fetbawkk=
     volumes:
-      - ./mnt/airflow/dags:/usr/local/airflow/dags
-      - ./mnt/airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
-      - ./mnt/airflow/data:/usr/local/airflow/data
+        - ./mnt/airflow/dags:/usr/local/airflow/dags
+        - ./mnt/airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
+        - ./mnt/airflow/data:/usr/local/airflow/data
     ports:
-      - 8080:8080
+        - 8080:8080
     healthcheck:
-      test: [ "CMD", "nc", "-z", "airflow", "8080" ]
-      timeout: 45s
-      interval: 10s
-      retries: 10
+        test: [ "CMD", "nc", "-z", "airflow", "8080" ]
+        timeout: 45s
+        interval: 10s
+        retries: 10
