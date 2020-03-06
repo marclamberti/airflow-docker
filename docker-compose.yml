@@ -11,6 +11,7 @@ services:
     volumes:
       - ./mnt/airflow/dags:/usr/local/airflow/dags
       - ./mnt/airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
+      - ./mnt/airflow/data:/usr/local/airflow/data
     ports:
       - 8080:8080
     healthcheck:
