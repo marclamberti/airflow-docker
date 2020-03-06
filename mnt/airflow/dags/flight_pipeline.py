@@ -13,6 +13,9 @@ default_args = {
     'owner': 'airflow'
 }
 
+def test():
+    print(Variable.get("flight_secret_key"))
+    
 def getting_api_data(**context):
     r = requests.get("http://api.aviationstack.com/v1/flights?access_key=" + Variable.get("flight_secret_key") + "&flight_status=active")
     data = r.json()
@@ -29,5 +32,9 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         )
     
     # Task 2: Json to CSV
+    task_2 = PythonOperator(
+        task_id='test',
+        python_callable=test
+        )
     
     # Task 3: Store data to Redshift tables
