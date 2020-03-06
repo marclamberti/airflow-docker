@@ -6,16 +6,47 @@ from datetime import datetime, timedelta
 import requests
 import airflow
 import json
-import airflow
+import csv
 
 default_args = {
     'start_date': airflow.utils.dates.days_ago(1),
     'owner': 'airflow'
 }
 
-def test():
-    print(Variable.get("flight_secret_key"))
-    
+def json_to_csv(**context):
+    with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string()) as inf:
+        data = json.load(inf)
+        with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string()) as ouf:
+            f = csv.writer(ouf)
+            f.writerow([
+                "flight_date",
+                "flight_status",
+                "departure.airport",
+                "departure.icao",
+                "arrival.airport",
+                "arrival.icao",
+                "airline.name",
+                "flight.number",
+                "aircraft.icao",
+                "live.updated",
+                "live.latitude",
+                "live.longitude"
+            ])
+            f.writerow([
+                data['flight_date'],
+                data['flight_status'],
+                data['departure']['airport'],
+                data['departure']['icao'],
+                data['arrival']['airport'],
+                data['arrival']['icao'],
+                data['airline']['name'],
+                data['flight']['number'],
+                data['aircraft']['icao'],
+                data['live']['updated'],
+                data['live']['latitude'],
+                data['live']['longitude']
+            ])
+
 def getting_api_data(**context):
     r = requests.get("http://api.aviationstack.com/v1/flights?access_key=" + Variable.get("flight_secret_key") + "&flight_status=active")
     data = r.json()
@@ -33,8 +64,9 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
     
     # Task 2: Json to CSV
     task_2 = PythonOperator(
-        task_id='test',
-        python_callable=test
+        task_id='json_to_csv',
+        python_callable=json_to_csv,
+        provide_context=True
         )
     
     # Task 3: Store data to Redshift tables
