@@ -19,7 +19,7 @@ def test():
 def getting_api_data(**context):
     r = requests.get("http://api.aviationstack.com/v1/flights?access_key=" + Variable.get("flight_secret_key") + "&flight_status=active")
     data = r.json()
-    with open('/usr/local/airflow/data_' + context['execution_date'], 'w') as f:
+    with open('/usr/local/airflow/data_' + context['execution_date'].to_date_string(), 'w') as f:
         json.dump(data, f, ensure_ascii=False)
 
 with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args=default_args) as dag:
