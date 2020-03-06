@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import requests
 import airflow
 import json
+import airflow
 
 default_args = {
     'start_date': airflow.utils.dates.days_ago(1),
@@ -13,7 +14,7 @@ default_args = {
 }
 
 def getting_api_data(**context):
-    r = requests.get(Variable.get("flight_api"))
+    r = requests.get("http://api.aviationstack.com/v1/flights?access_key=" + Variable.get("flight_secret_key") + "&flight_status=active")
     data = r.json()
     with open('/usr/local/airflow/data_' + context['execution_date'], 'w') as f:
         json.dump(data, f, ensure_ascii=False)
@@ -28,7 +29,5 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         )
     
     # Task 2: Json to CSV
-    #dummy_task_2 = DummyOperator(task_id='dummy_task_2')
     
     # Task 3: Store data to Redshift tables
-    #dummy_task_1 >> dummy_task_2
