@@ -15,7 +15,7 @@ default_args = {
 
 def json_to_csv(**context):
     with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string()) as inf:
-        data = json.load(inf)
+        data = json.load(inf)['data']
         with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string(), 'w') as ouf:
             f = csv.writer(ouf)
             f.writerow([
