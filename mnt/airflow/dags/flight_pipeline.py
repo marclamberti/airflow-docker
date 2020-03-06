@@ -16,7 +16,7 @@ default_args = {
 
 def store_csv_to_s3(**context):
     S3Hook(
-        aws_conn_id='flight-s3'
+        aws_conn_id='s3-flight'
     ).load_file(
         filename='/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.csv',
         key='flights',
