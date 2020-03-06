@@ -4,6 +4,7 @@ from airflow.models import Variable
 
 from datetime import datetime, timedelta
 import requests
+import airflow
 import json
 
 default_args = {
@@ -27,7 +28,7 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         )
     
     # Task 2: Json to CSV
-    dummy_task_2 = DummyOperator(task_id='dummy_task_2')
+    #dummy_task_2 = DummyOperator(task_id='dummy_task_2')
     
     # Task 3: Store data to Redshift tables
-    dummy_task_1 >> dummy_task_2
+    #dummy_task_1 >> dummy_task_2
