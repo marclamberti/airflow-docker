@@ -16,36 +16,36 @@ default_args = {
 def json_to_csv(**context):
     with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string()) as inf:
         data = json.load(inf)['data']
-        with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string(), 'w') as ouf:
-            f = csv.writer(ouf)
-            f.writerow([
-                "flight_date",
-                "flight_status",
-                "departure.airport",
-                "departure.icao",
-                "arrival.airport",
-                "arrival.icao",
-                "airline.name",
-                "flight.number",
-                "aircraft.icao",
-                "live.updated",
-                "live.latitude",
-                "live.longitude"
-            ])
-            f.writerow([
-                data['flight_date'],
-                data['flight_status'],
-                data['departure']['airport'],
-                data['departure']['icao'],
-                data['arrival']['airport'],
-                data['arrival']['icao'],
-                data['airline']['name'],
-                data['flight']['number'],
-                data['aircraft']['icao'],
-                data['live']['updated'],
-                data['live']['latitude'],
-                data['live']['longitude']
-            ])
+        #with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string(), 'w') as ouf:
+        #    f = csv.writer(ouf)
+        #    f.writerow([
+        #        "flight_date",
+        #        "flight_status",
+        #        "departure.airport",
+        #        "departure.icao",
+        #        "arrival.airport",
+        #        "arrival.icao",
+        #        "airline.name",
+        #        "flight.number",
+        #        "aircraft.icao",
+        #        "live.updated",
+        #        "live.latitude",
+        #        "live.longitude"
+        #    ])
+        #    f.writerow([
+        #        data['flight_date'],
+        #        data['flight_status'],
+        #        data['departure']['airport'],
+        #        data['departure']['icao'],
+        #        data['arrival']['airport'],
+        #        data['arrival']['icao'],
+        #        data['airline']['name'],
+        #        data['flight']['number'],
+        #        data['aircraft']['icao'],
+        #        data['live']['updated'],
+        #        data['live']['latitude'],
+        #        data['live']['longitude']
+        #    ])
 
 def getting_api_data(**context):
     r = requests.get("http://api.aviationstack.com/v1/flights?access_key=" + Variable.get("flight_secret_key") + "&flight_status=active")
