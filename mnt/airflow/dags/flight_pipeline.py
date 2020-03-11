@@ -22,10 +22,10 @@ class CustomS3ToRedshiftTransfer(S3ToRedshiftTransfer):
     @apply_defaults
     def __init__(
             self,
-            schema,
-            table,
-            s3_bucket,
-            s3_key,
+            schema=None,
+            table=None,
+            s3_bucket=None,
+            s3_key=None,
             redshift_conn_id='redshift_default',
             aws_conn_id='aws_default',
             verify=None,
