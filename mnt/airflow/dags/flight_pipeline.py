@@ -15,6 +15,9 @@ default_args = {
     'owner': 'airflow'
 }
 
+class CustomS3ToRedshiftTransfer(S3ToRedshiftTransfer):
+    template_fields = ('s3_bucket', 's3_key')
+
 def store_csv_to_s3(**context):
     filename = 'data_' + context['execution_date'].to_date_string() + '.csv'
     S3Hook(
@@ -22,7 +25,8 @@ def store_csv_to_s3(**context):
     ).load_file(
         filename='/usr/local/airflow/data/' + filename ,
         key=filename,
-        bucket_name='ml-flight-data'
+        bucket_name=Variable.get('bucket_name'),
+        replace=True
     )
 
 def json_to_csv(**context):
@@ -92,4 +96,12 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
     )
 
     # Task 4: S3 to Redshift
-    
+    task_4 = CustomS3ToRedshiftTransfer(
+        task_id='load_flights_into_refshift',
+        schema='public',
+        table='flights',
+        s3_bucket='{{ var.value.bucket_name }}',
+        s3_key='data_{{ ds }}.csv',
+        redshift_conn_id='redshift-flight',
+        aws_conn_id='s3-flight'
+    )
