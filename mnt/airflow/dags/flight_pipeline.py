@@ -20,30 +20,8 @@ class CustomS3ToRedshiftTransfer(S3ToRedshiftTransfer):
     template_fields = ('s3_bucket', 's3_key')
 
     @apply_defaults
-    def __init__(
-            self,
-            schema=None,
-            table=None,
-            s3_bucket=None,
-            s3_key=None,
-            redshift_conn_id='redshift_default',
-            aws_conn_id='aws_default',
-            verify=None,
-            copy_options=tuple(),
-            autocommit=False,
-            parameters=None,
-            *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CustomS3ToRedshiftTransfer, self).__init__(*args, **kwargs)
-        self.schema = schema
-        self.table = table
-        self.s3_bucket = s3_bucket
-        self.s3_key = s3_key
-        self.redshift_conn_id = redshift_conn_id
-        self.aws_conn_id = aws_conn_id
-        self.verify = verify
-        self.copy_options = copy_options
-        self.autocommit = autocommit
-        self.parameters = parameters
 
 def store_csv_to_s3(**context):
     filename = 'data_' + context['execution_date'].to_date_string() + '.csv'
