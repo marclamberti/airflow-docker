@@ -19,9 +19,6 @@ default_args = {
 class CustomS3ToRedshiftTransfer(S3ToRedshiftTransfer):
     template_fields = ('s3_bucket', 's3_key')
 
-    @apply_defaults
-    def __init__(self, *args, **kwargs):
-        super(CustomS3ToRedshiftTransfer, self).__init__(*args, **kwargs)
 
 def store_csv_to_s3(**context):
     filename = 'data_' + context['execution_date'].to_date_string() + '.csv'
@@ -101,12 +98,12 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
     )
 
     # Task 4: S3 to Redshift
-    task_4 = CustomS3ToRedshiftTransfer(
+    task_4 = S3ToRedshiftTransfer(
         task_id='load_flights_into_refshift',
         schema='public',
         table='flights',
-        s3_bucket='{{ var.value.bucket_name }}',
-        s3_key='data_{{ ds }}.csv',
+        s3_bucket='test',
+        s3_key='data_test.csv',
         redshift_conn_id='redshift-flight',
         aws_conn_id='s3-flight'
     )
