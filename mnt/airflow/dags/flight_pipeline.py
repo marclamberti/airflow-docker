@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.hooks.S3_hook import S3Hook
+from airflow.operators.s3_to_redshift_operator import S3ToRedshiftTransfer
 from airflow.models import Variable
 
 from datetime import datetime, timedelta
@@ -32,16 +33,16 @@ def json_to_csv(**context):
             f.writerow([
                 "flight_date",
                 "flight_status",
-                "departure.airport",
-                "departure.icao",
-                "arrival.airport",
-                "arrival.icao",
-                "airline.name",
-                "flight.number",
-                "aircraft.icao",
-                "live.updated",
-                "live.latitude",
-                "live.longitude"
+                "departure_airport",
+                "departure_icao",
+                "arrival_airport",
+                "arrival_icao",
+                "airline_name",
+                "flight_number",
+                "aircraft_icao",
+                "live_updated",
+                "live_latitude",
+                "live_longitude"
             ])
             for row in data:
                 if not row['aircraft'] or not row['live']:
@@ -89,3 +90,6 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         python_callable=store_csv_to_s3,
         provide_context=True
     )
+
+    # Task 4: S3 to Redshift
+    
