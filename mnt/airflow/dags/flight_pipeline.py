@@ -26,7 +26,7 @@ def store_csv_to_s3(**context):
         aws_conn_id='s3-flight'
     ).load_file(
         filename='/usr/local/airflow/data/' + filename ,
-        key=filename,
+        key=context['execution_date'].to_date_string() + "/flights",
         bucket_name=Variable.get('bucket_name'),
         replace=True
     )
@@ -103,7 +103,7 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         schema='public',
         table='flights',
         s3_bucket='{{ var.value.bucket_name }}',
-        s3_key='data_{{ ds }}.csv',
+        s3_key='{{ ds }}',
         redshift_conn_id='redshift-flight',
         aws_conn_id='s3-flight'
     )
