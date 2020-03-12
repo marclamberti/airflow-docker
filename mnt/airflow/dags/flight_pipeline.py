@@ -105,5 +105,6 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         s3_bucket='{{ var.value.bucket_name }}',
         s3_key='{{ ds }}',
         redshift_conn_id='redshift-flight',
-        aws_conn_id='s3-flight'
+        aws_conn_id='s3-flight',
+        copy_options=('IGNOREHEADER', 1)
     )
