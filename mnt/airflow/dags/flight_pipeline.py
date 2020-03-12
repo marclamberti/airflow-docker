@@ -98,12 +98,12 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
     )
 
     # Task 4: S3 to Redshift
-    task_4 = S3ToRedshiftTransfer(
+    task_4 = CustomS3ToRedshiftTransfer(
         task_id='load_flights_into_refshift',
         schema='public',
         table='flights',
-        s3_bucket='test',
-        s3_key='data_test.csv',
+        s3_bucket='{{ var.value.bucket_name }}',
+        s3_key='data_{{ ds }}.csv',
         redshift_conn_id='redshift-flight',
         aws_conn_id='s3-flight'
     )

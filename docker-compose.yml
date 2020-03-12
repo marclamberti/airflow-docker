@@ -9,6 +9,7 @@ services:
     restart: always
     container_name: airflow
     environment:
+        - AWS_DEFAULT_REGION
         - FERNET_KEY=XvV60IME7gelr6NmPNjwKpX6oPt0YAi35-9Fetbawkk=
     volumes:
         - ./mnt/airflow/dags:/usr/local/airflow/dags
