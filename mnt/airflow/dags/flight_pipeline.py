@@ -98,6 +98,11 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
     )
 
     # Task 4: S3 to Redshift
+    # /!\ - Values in csv must match with the order of table columns
+    #     - Change the default delimiter of Redshift according to the one in your csv
+    #     - In the connection from AIRFLOW UI
+    #       - The schema is the DBName
+    #       - The host must be provided (endpoint of Redshift)
     task_4 = CustomS3ToRedshiftTransfer(
         task_id='load_flights_into_refshift',
         schema='public',
@@ -106,5 +111,5 @@ with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args
         s3_key='{{ ds }}',
         redshift_conn_id='redshift-flight',
         aws_conn_id='s3-flight',
-        copy_options=('IGNOREHEADER', '1', 'DELIMITER', ',')
+        copy_options=('IGNOREHEADER', '1', 'DELIMITER', '","')
     )
