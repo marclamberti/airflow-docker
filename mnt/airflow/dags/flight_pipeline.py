@@ -37,6 +37,7 @@ def json_to_csv(**context):
         with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + '.csv', 'w') as ouf:
             f = csv.writer(ouf, quoting=csv.QUOTE_NONE)
             f.writerow([
+                "flight_number",
                 "flight_date",
                 "flight_status",
                 "departure_airport",
@@ -44,7 +45,6 @@ def json_to_csv(**context):
                 "arrival_airport",
                 "arrival_icao",
                 "airline_name",
-                "flight_number",
                 "aircraft_icao",
                 "live_updated",
                 "live_latitude",
@@ -54,6 +54,7 @@ def json_to_csv(**context):
                 if not row['aircraft'] or not row['live']:
                     continue
                 f.writerow([
+                    row['flight']['number'],
                     row['flight_date'],
                     row['flight_status'],
                     row['departure']['airport'],
@@ -61,7 +62,6 @@ def json_to_csv(**context):
                     row['arrival']['airport'],
                     row['arrival']['icao'],
                     row['airline']['name'],
-                    row['flight']['number'],
                     row['aircraft']['icao'],
                     row['live']['updated'],
                     row['live']['latitude'],
