@@ -74,7 +74,7 @@ def getting_api_data(**context):
     with open('/usr/local/airflow/data/data_' + context['execution_date'].to_date_string() + ".json", 'w') as f:
         json.dump(data, f, ensure_ascii=False)
 
-with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args=default_args) as dag:
+with DAG(dag_id='flight_pipeline', schedule_interval="*/2 * * * *", default_args=default_args, catchup=False) as dag:
 
     # Task 1: Getting API data
     task_1 = PythonOperator(
